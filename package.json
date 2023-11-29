@@ -1,0 +1,13 @@
+{
+  "name": "mqtt2prom",
+  "description": "Translates MQTT messages to Prometheus",
+  "version": "0.0.1",
+  "scripts": {
+    "main": "node mqtt2prom.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mqtt": "",
+    "prom-client": "^15.0.0"
+  }
+}
