@@ -16,7 +16,7 @@ var mqtt = require("mqtt");
     app.use("", apiRouter);
 
     apiRouter.get("/prometheus", async (req, res) => {
-      console.log("Exporting Prometheus stats...")
+      console.log("Exporting Prometheus stats...");
       try {
         res.set("Content-Type", register.contentType);
         const metrics = await register.metrics();
@@ -74,6 +74,31 @@ const zigbee_temp = new promClient.Gauge({
   help: "Zigbee device temperature",
   labelNames: ["name"],
 });
+const zigbee_humidity = new promClient.Gauge({
+  name: "zigbee_humidity",
+  help: "Zigbee device humidity",
+  labelNames: ["name"],
+});
+const zigbee_co2 = new promClient.Gauge({
+  name: "zigbee_co2",
+  help: "Zigbee device CO2",
+  labelNames: ["name"],
+});
+const zigbee_voc = new promClient.Gauge({
+  name: "zigbee_voc",
+  help: "Zigbee device VOC",
+  labelNames: ["name"],
+});
+const zigbee_formaldehyde = new promClient.Gauge({
+  name: "zigbee_formaldehyde",
+  help: "Zigbee device formaldehyde",
+  labelNames: ["name"],
+});
+const zigbee_pm25 = new promClient.Gauge({
+  name: "zigbee_pm25",
+  help: "Zigbee device pm25",
+  labelNames: ["name"],
+});
 const zigbee_link = new promClient.Gauge({
   name: "zigbee_link",
   help: "Zigbee device link quality",
@@ -98,6 +123,11 @@ register.registerMetric(zigbee_watt);
 register.registerMetric(zigbee_consumption);
 register.registerMetric(zigbee_state);
 register.registerMetric(zigbee_temp);
+register.registerMetric(zigbee_humidity);
+register.registerMetric(zigbee_co2);
+register.registerMetric(zigbee_voc);
+register.registerMetric(zigbee_formaldehyde);
+register.registerMetric(zigbee_pm25);
 register.registerMetric(zigbee_link);
 register.registerMetric(zigbee_voltage);
 register.registerMetric(zigbee_current);
@@ -129,7 +159,8 @@ mqttClient.on("connect", function () {
   mqttClient.subscribe("zigbee2mqtt/TV (onderste stekker)");
   mqttClient.subscribe("zigbee2mqtt/Koffie");
   mqttClient.subscribe("zigbee2mqtt/Bureau (bovenste stekker)");
-  mqttClient.subscribe("zigbee2mqtt/Bureau (onderste stekker)")
+  mqttClient.subscribe("zigbee2mqtt/Bureau (onderste stekker)");
+  mqttClient.subscribe("zigbee2mqtt/Air Meter");
 });
 
 mqttClient.on("message", function (topic, message, packet) {
@@ -156,6 +187,24 @@ mqttClient.on("message", function (topic, message, packet) {
       if (stats_zigbee["temperature"]) {
         zigbee_temp.set({ name: sTopic[1] }, stats_zigbee["temperature"]);
       }
+      if (stats_zigbee["humidity"]) {
+        zigbee_humidity.set({ name: sTopic[1] }, stats_zigbee["humidity"]);
+      }
+      if (stats_zigbee["co2"]) {
+        zigbee_co2.set({ name: sTopic[1] }, stats_zigbee["co2"]);
+      }
+      if (stats_zigbee["voc"]) {
+        zigbee_voc.set({ name: sTopic[1] }, stats_zigbee["voc"]);
+      }
+      if (stats_zigbee["formaldehyd"]) {
+        zigbee_formaldehyde.set(
+          { name: sTopic[1] },
+          stats_zigbee["formaldehyd"]
+        );
+      }
+      if (stats_zigbee["pm25"]) {
+        zigbee_pm25.set({ name: sTopic[1] }, stats_zigbee["pm25"]);
+      }
       if (stats_zigbee["linkquality"]) {
         zigbee_link.set({ name: sTopic[1] }, stats_zigbee["linkquality"]);
       }
@@ -168,7 +217,10 @@ mqttClient.on("message", function (topic, message, packet) {
       if (stats_zigbee["energy"]) {
         zigbee_energy.set({ name: sTopic[1] }, stats_zigbee["energy"]);
       }
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
     return;
   }
+  console.log("Unhandled topic '" + topic + "'");
 });
