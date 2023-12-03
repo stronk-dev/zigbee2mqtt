@@ -153,11 +153,9 @@ mqttClient.on("connect", function () {
   console.log("connected");
   mqttClient.subscribe("zigbee2mqtt/Servers");
   mqttClient.subscribe("zigbee2mqtt/Koelkast");
-  mqttClient.subscribe("zigbee2mqtt/Gang");
   mqttClient.subscribe("zigbee2mqtt/Slaapkamer");
   mqttClient.subscribe("zigbee2mqtt/TV (bovenste stekker)");
   mqttClient.subscribe("zigbee2mqtt/TV (onderste stekker)");
-  mqttClient.subscribe("zigbee2mqtt/Koffie");
   mqttClient.subscribe("zigbee2mqtt/Bureau (bovenste stekker)");
   mqttClient.subscribe("zigbee2mqtt/Bureau (onderste stekker)");
   mqttClient.subscribe("zigbee2mqtt/Air Meter");
